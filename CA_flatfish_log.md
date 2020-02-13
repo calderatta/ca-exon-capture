@@ -1,37 +1,28 @@
-# Main
-##### Exon-capture Sequence Processing
-Last Updated:
+## Flatfish Exon-capture Sequence Processing Log
+##### Calder Atta
+Advisor: Luke Tornabene  
+Collaborators: Alison Deary, Steven Roberts, Kerry Naish  
+Program Start: Fall 2017  
+Program End (predicted): Fall 2019 (9 quarters)  
+(need to create GitHub repo)  
+Latest Update: January 2019
 
 ***
-## Overview
-I. Download Raw Data
-II. Merge Lanes
-III. Trim Adapters
-IV. Assemble
-V. Filter Data Set
-VI. Aligning
-VII. Alignment Filtering
-VIII. Summary Statistics
-IX. Concatenated Alignments
-X. RAxML Tree
-XI. Remove contaminated samples and redo RAxML
-XII. Select Clocklike Genes
-XIII. Create Species Tree from Gene Trees
-***
 
-## I. Download Raw Data
+## Raw Data
 
 ##### 1. Download
 
-1st Run: https://hiseq.dbi.udel.edu/Data/181130/rdtnf5OjDHDsXJX/181130_Tornabene.tar  
+1st Run: https://hiseq.dbi.udel.edu/Data/181130/rdtnf5OjDHDsXJX/181130_Tornabene.tar
 2nd Run: https://hiseq.dbi.udel.edu/Data/181207/ibqZDDRtFizMXI/181207_Tornebene.tar
+Update: These links no longer work. Raw data is located on SHOU cluster.
 
-Source:  
-DNA Sequencing & Genotyping Center  
-Delaware Biotechnology Institute  
-University of Delaware  
-Primary Contact: Brewster Kingham (brucek@udel.edu)  
-Servicing: Illumina (HiSeq 2500, 150 PE)  
+Source:
+DNA Sequencing & Genotyping Center
+Delaware Biotechnology Institute
+University of Delaware
+Primary Contact: Brewster Kingham (brucek@udel.edu)
+Servicing: Illumina (HiSeq 2500, 150 PE)
 
 Save files in  `raw-data/`.
 
@@ -39,10 +30,10 @@ Save files in  `raw-data/`.
 
 ##### 3. Unzip individual .fastq files
 
-In each folder containing .fastq files...  
-`raw-data/181130_Tornebene/Atta_Pool1`  
-`raw-data/181130_Tornebene/Atta_Pool2`  
-`raw-data/181207_Tornebene/Atta_Pool1`  
+In each folder containing .fastq files...
+`raw-data/181130_Tornebene/Atta_Pool1`
+`raw-data/181130_Tornebene/Atta_Pool2`
+`raw-data/181207_Tornebene/Atta_Pool1`
 `raw-data/181207_Tornebene/Atta_Pool2`
 
 ...run the following command:
@@ -133,7 +124,7 @@ Run the following code as a job named `#PBS -N CA_assemble`:
     --dbtype nucleo \
     --ref_name Oreochromis_niloticus \
     --outdir assemble_result
-    
+
 The sga_assemble step failed to we needed to re-run starting from that step. See `assemble.pl -h` for how to run from a part-way through the process.
 
 Full runtime was about 6 days.
@@ -144,8 +135,8 @@ Full runtime was about 6 days.
 
 ## V. Filter Data Set
 
-Before aligning, remove...  
-(1) Samples represented by fewer than 500 genes  
+Before aligning, remove...
+(1) Samples represented by fewer than 500 genes
 (2) Genes captured in fewer then 80% of the samples
 
 ##### 1. Check genes counts per sample
@@ -170,7 +161,7 @@ We wanted to use a more relaxed completeness level to preserve more genes. We pl
 
 At this point there is one file for each gene, and each file contains one sequence per samples + the reference (O. niloticus in this case). So we need to filter out the files with fewer sequences than 70% of the total taxa.
 
-Total Samples = 122  
+Total Samples = 122
 70% of Samples = 122 * 0.7 = 85.4
 
 Run the following code as a job named `#PBS -N CA_minseq86`:
@@ -234,10 +225,10 @@ Citation for using RAxML:
 Code tried on SHOU Cluster:
 
     raxmlHPC-PTHREADS -T 12 -n raxml -y -f a -# 100 -p 12345 -x 12345 -m GTRCAT -s concat.phy
-    
+
 I couldn't get this to work on the cluster so I downloaded concat.phy and ran locally.
 RAxML Download and Info:
-https://github.com/stamatak/standard-RAxML  
+https://github.com/stamatak/standard-RAxML
 https://cme.h-its.org/exelixis/resource/download/NewManual.pdf
 
 To install RAxML, download GitHub repository, extract, navigate to the folder. Then use the code:
@@ -304,11 +295,11 @@ Atom crashed and I lost documentation for this. "Need to google how to remove se
     #PBS -q avant
 
     cd /home/users/cli/ocean/Calder/
-    
+
     concat_loci.pl \
     --indir rm_contam_filtered \
     --outfile rm_contam_concat
-    
+
     raxmlHPC-PTHREADS -n raxml2 -y -f a -# 100 -p 12345 -x 12345 -m GTRCAT -s rm_contam_concat.phy -T 12
 
     exit 0
@@ -370,7 +361,7 @@ Compress clocklike_min1.9 and move to cluster.
 Input files: `clocklike_max1.9` (This can be any of the filtered alignments.)
 
 Output files: `clocklike_max1.9_ml`
-    
+
 ###### run_job.sh on SHOU cluster
 
     #PBS -l nodes=1:ppn=24
@@ -398,8 +389,189 @@ You may need to navigate into the ASTRAL repository and change the paths for inp
 
 I couldn't get this to work as an environmental variable, so I just navigated into the Astral directory, moved clocklike_merge.tre into test_data, and move everything back to my working directory after. Hand typing seems to help it run.
 
-## VIII. Generate Time-calibrated Tree
+***
+## Prepping for ASIH 2019
+***
+Started: July 16, 2019  
+Run on SHOU cluster:
 
-If we ran this directly only on the clocklike genes, Beast would need to consider lengths as well as all possible topologies. So to constrain the computational workload, we will use the ASTRAL tree as a topology constraint.
+    #!/bin/bash
 
-                                                                
+    #PBS -l nodes=1:ppn=24
+    #PBS -l walltime=240:00:00
+    #PBS -N CA_v11trees
+    #PBS -q avant
+
+    cd /home/users/cli/ocean/Calder/
+
+    construct_tree.pl --indir rm_ORENILO_v11 --cpu 4
+
+    concat_loci.pl \
+    --indir rm_ORENILO_v11 \
+    --outfile rm_ORENILO_v11_concat
+
+    raxmlHPC-PTHREADS -n raxml10 -y -f a -# 100 -p 12345 -x 12345 -m GTRCAT -s rm_ORENILO_v11_concat.phy -T 12
+
+    construct_tree.pl --indir clocklike_v11 --cpu 4
+
+    concat_loci.pl \
+    --indir clocklike_v11 \
+    --outfile clocklike_v11_concat
+
+    raxmlHPC-PTHREADS -n raxml11 -y -f a -# 100 -p 12345 -x 12345 -m GTRCAT -s clocklike_v11_concat.phy -T 12
+
+    exit 0
+
+
+***
+## Round 2
+***
+
+## Trimming (didn't need to merge)
+Run on SHOU cluster:
+
+    #!/bin/bash
+
+    #PBS -l nodes=1:ppn=24
+    #PBS -l walltime=240:00:00
+    #PBS -N CA_trim
+    #PBS -q avant
+
+    cd /home/users/cli/ocean/Calder/round2/
+
+    trim_adaptor.pl \
+    --raw_reads 1_merge \
+    --trimmed 2_trimmed
+
+    exit 0
+
+## Combining Data from Round 1, Round 2, and FishLife from Lily Hughes
+Made a custom R script to do this.
+
+## Developing preliminary RAxML tree
+Started: December 17, 2019  
+Run on SHOU cluster:
+
+    #!/bin/bash
+
+    #PBS -l nodes=1:ppn=24
+    #PBS -l walltime=240:00:00
+    #PBS -N CA_align3
+    #PBS -q avant
+
+    cd /home/users/cli/ocean/Calder/round2/
+
+    mafft_aln.pl \
+    --dna_unaligned 6_combined_data \
+    --dna_aligned 6_nf_aligned \
+    --cpu 12
+
+    filter.pl \
+    --indir 6_nf_aligned \
+    --filtered 6_nf_filtered \
+    --ref_taxa "Oreochromis_niloticus" \
+    --cpu 12
+
+    concat_loci.pl \
+    --indir 6_nf_filtered \
+    --outfile 6_concat
+
+    raxmlHPC-PTHREADS -n 6_concat -y -f a -# 100 -p 12345 -x 12345 -m GTRCAT -s 6_concat.phy -T 12
+
+    mkdir 6_concat
+    mv 6_concat.fas 6_concat/
+    mv 6_concat.nex 6_concat/
+    mv 6_concat.phy 6_concat/
+    mkdir 6_nf_filtered_supp
+    mv 6_nf_filtered.numofgenescaptured.txt 6_nf_filtered_supp/
+    mkdir 6_raxml
+    mv RAxML* 6_raxml/
+
+    pick_taxa.pl \
+    --indir 6_combined_data \
+    --outdir 7_rm_contam \
+    --deselected_taxa 'PARLETH_KU000001_2_S11 PARLETH_KU000001_S114 PSEERUM_LSU-5281_S32 PSEERUM_LSU-5281_2_S3 RHOTAPI_H7101-01_S113 LEPBILI_UW153236_S95 RHOLEPO_H5923-01_S106 RHOPLEB_H5924-01_S107 POENATA_H6413-06_S109 HIPSTEN_UW150839_2_S10 LIMASPE_UW151257_S36 EMBBATH_UW119866_2_S09 HIPSTEN_UW150839_S24 HIPELAS_UW151449_S68 INOISCH_UW025860_S53 LEPPOLY_UW119625_S27 EMBBATH_UW119866_S94 HIPELAS_UW152926_S93 HIPSTOM_UW119884_S10 PLEVERT_UW119938_S16 LIMPROB_UW150849_S54 LEPPOLY_UW150842_S37 ATHEVER_DY167098_S105 ATHEVER_DY167159_S99 ATHEVER_DY167166_S101 ATHEVER_DY167195_S103 ATHEVER_UW117298_S46 ATHEVER_UW117831_S1 ATHSTOM_UW047693_S34 ATHSTOM_UW110486_S60 ATHSTOM_UW119788_S14 ATHSTOM_UW151210_S87 ATHSTOM_UW151216_S26 HIPELAS_UW117274_S70 HIPELAS_UW119483_S40 HIPELAS_UW119489_S77 HIPELAS_UW119491_S76 HIPELAS_UW119507_S72 HIPELAS_UW119509_S69 HIPELAS_UW150505_S67 HIPELAS_UW151030_S17 HIPELAS_UW151214_S18 HIPELAS_UW154409_S97 HIPELAS_UW154426_S71 HIPELAS_UW154455_S92 HIPELAS_UW154480_S73 HIPROBU_UW117291_S79 HIPROBU_UW117292_S62 HIPROBU_UW117700_S75 HIPROBU_UW119191_S15 HIPROBU_UW119498_S78 HIPROBU_UW150507_S81 HIPROBU_UW152000_S66 HIPROBU_UW152006_S64 HIPROBU_UW152007_S8 HIPROBU_UW152051_S84 HIPROBU_UW152053_S91 HIPROBU_UW152056_S83 HIPROBU_UW154435_S82 LEPBILI_UW151145_S58 LEPBILI_UW116279_S6 LEPBILI_UW119933_S38 LEPBILI_UW150840_S89 LEPBILI_UW150623_S88 LEPPOLY_UW110225_S5 LEPPOLY_UW150523_S96 LEPPOLY_UW150620_S86 LIMASPE_UW117285_S48 LIMASPE_UW117286_S56 LIMASPE_UW150503_S3 LIMASPE_UW151403_S23 LIMSAKH_UW150086_S47 LIMSAKH_UW117279_S44 LIMSAKH_UW157684_S35 LIMSAKH_UW157689_S30'
+
+    mafft_aln.pl \
+    --dna_unaligned 7_rm_contam \
+    --dna_aligned 7_nf_aligned \
+    --cpu 12
+
+    filter.pl \
+    --indir 7_nf_aligned \
+    --filtered 7_nf_filtered \
+    --ref_taxa "Oreochromis_niloticus" \
+    --cpu 12
+
+    concat_loci.pl \
+    --indir 7_nf_filtered \
+    --outfile 7_concat
+
+    raxmlHPC-PTHREADS -n 7_concat -y -f a -# 100 -p 12345 -x 12345 -m GTRCAT -s 7_concat.phy -T 12
+
+    mkdir 7_concat
+    mv 7_concat.fas 7_concat/
+    mv 7_concat.nex 7_concat/
+    mv 7_concat.phy 7_concat/
+    mkdir 7_nf_filtered_supp
+    mv 7_nf_filtered.numofgenescaptured.txt 7_nf_filtered_supp/
+    mkdir 7_raxml
+    mv RAxML* 7_raxml/
+
+    exit 0
+
+## Refined set of taxa concatinated tree
+Started: January 31, 2020  
+Run on SHOU cluster:
+
+    #!/bin/bash
+
+    #PBS -l nodes=1:ppn=24
+    #PBS -l walltime=240:00:00
+    #PBS -N CA_raxml8
+    #PBS -q avant
+
+    cd /home/users/cli/ocean/Calder/round2/
+
+    pick_taxa.pl \
+    --indir 6_combined_data \
+    --outdir 8_rm_contam \
+    --deselected_taxa 'RHOTAPI_H7101-01_S113 LEPBILI_UW153236_S95 RHOLEPO_H5923-01_S106 POENATA_H6413-06_S109 XYSLIOL_UW156295_S5 HIPSTEN_UW150839_2_S10 LIMASPE_UW151257_S36 EMBBATH_UW119866_2_S9 HIPSTEN_UW150839_S24 HIPELAS_UW151449_S68 INOISCH_UW025860_S53 LEPPOLY_UW119625_S27 EMBBATH_UW119866_S94 HIPELAS_UW152926_S93 HIPSTOM_UW119884_S10 PLEVERT_UW119938_S16 LIMPROB_UW150849_S54 LEPPOLY_UW150842_S37 ATHEVER_DY167098_S105 ATHEVER_DY167159_S99 ATHEVER_DY167166_S101 ATHEVER_DY167195_S103 ATHEVER_UW117298_S46 ATHEVER_UW117831_S1 ATHSTOM_UW047693_S34 ATHSTOM_UW110486_S60 ATHSTOM_UW119788_S14 ATHSTOM_UW151210_S87 ATHSTOM_UW151216_S26 HIPELAS_UW117274_S70 HIPELAS_UW119483_S40 HIPELAS_UW119489_S77 HIPELAS_UW119491_S76 HIPELAS_UW119507_S72 HIPELAS_UW119509_S69 HIPELAS_UW150505_S67 HIPELAS_UW151030_S17 HIPELAS_UW151214_S18 HIPELAS_UW154409_S97 HIPELAS_UW154426_S71 HIPELAS_UW154455_S92 HIPELAS_UW154480_S73 HIPROBU_UW117291_S79 HIPROBU_UW117292_S62 HIPROBU_UW117700_S75 HIPROBU_UW119191_S15 HIPROBU_UW119498_S78 HIPROBU_UW150507_S81 HIPROBU_UW152000_S66 HIPROBU_UW152006_S64 HIPROBU_UW152007_S8 HIPROBU_UW152051_S84 HIPROBU_UW152053_S91 HIPROBU_UW152056_S83 HIPROBU_UW154435_S82 LEPBILI_UW151145_S58 LEPBILI_UW116279_S6 LEPBILI_UW119933_S38 LEPBILI_UW150840_S89 LEPBILI_UW150623_S88 LEPPOLY_UW110225_S5 LEPPOLY_UW150523_S96 LEPPOLY_UW150620_S86 LIMASPE_UW117285_S48 LIMASPE_UW117286_S56 LIMASPE_UW150503_S3 LIMASPE_UW151403_S23 LIMSAKH_UW150086_S47 LIMSAKH_UW117279_S44 LIMSAKH_UW157684_S35 LIMSAKH_UW157689_S30'
+
+    mafft_aln.pl \
+    --dna_unaligned 8_rm_contam \
+    --dna_aligned 8_nf_aligned \
+    --cpu 12
+
+    filter.pl \
+    --indir 8_nf_aligned \
+    --filtered 8_nf_filtered \
+    --ref_taxa "Oreochromis_niloticus" \
+    --cpu 12
+
+    statistics.pl \
+    --nf_aligned 8_nf_filtered \
+    --f 3_assemble_result/f
+
+    concat_loci.pl \
+    --indir 8_nf_filtered \
+    --outfile 8_concat
+
+    raxmlHPC-PTHREADS -n 8_concat -y -f a -# 100 -p 12345 -x 12345 -m GTRCAT -s 8_concat.phy -T 12
+
+    mkdir 8_concat
+    mv 8_concat.fas 8_concat/
+    mv 8_concat.nex 8_concat/
+    mv 8_concat.phy 8_concat/
+    mkdir 8_nf_filtered_supp
+    mv 8_nf_filtered.numofgenescaptured.txt 8_nf_filtered_supp/
+    mkdir 8_raxml
+    mv RAxML* 8_raxml/
+
+    construct_tree.pl --indir 8_nf_filtered --cpu 4
+
+    cat 8_nf_filtered_ml/*.tre > 8_nf_filtered_merge.tre
+
+    clocklikeness_test.pl --indir 8_nf_filtered --besttree RAxML_bestTree.8_concat --clocklike 10_clocklike_dir --cpu 4
+
+    exit 0
