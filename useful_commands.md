@@ -15,6 +15,8 @@ Reference: https://stackoverflow.com/questions/23992646/sequence-length-of-fasta
 
     grep -c "^>" *.fas
 
+Without -c will only report files that have "^>"
+
 ## Remove files based on names in a file
 
     rm -r `cat file.txt`
@@ -36,3 +38,13 @@ To extract...
 rm -r `cat list_to_remove.txt`
 
 rsync -a /source/directory --files-from=/full/path/to/listfile /destination/directory
+
+## Setting Environmental Variables (MAC)
+
+Open up Terminal.
+Run the following command: sudo nano /etc/paths.
+Enter your password, when prompted.
+Go to the bottom of the file, and enter the path you wish to add.
+Hit control-x to quit.
+Enter “Y” to save the modified buffer.
+That's it! To test it, in new terminal window, type: echo $PATH.

@@ -16,6 +16,7 @@ Last modified: ~
 This document is meant to have all instractions for software relating to the exon-capture piptline. Update as needed.
 
 ## Overview
+- Perl
 - Pipeline Scripts
 - Pipeline Dependencies
 
@@ -25,10 +26,65 @@ This document is meant to have all instractions for software relating to the exo
 
 
 ***
+## Setting environmental variables ($PATH)
+***
+
+## Windows
+
+
+## MAC
+1. Open up Terminal.
+2. Run the following command:
+
+    sudo nano /etc/paths.
+    
+3. Enter your password, when prompted.
+4. Go to the bottom of the file, and enter the path you wish to add.
+5. Hit control-x to quit.
+6. Enter “Y” to save the modified buffer. Hit Enter.
+7. That's it! To test it, in new terminal window, type:
+
+    echo $PATH
+
+***
+## Perl
+***
+You must have Perl installed to use this pipeline. Mac computers come with Perl already installed. To test if Perl is installed run:
+
+    perl --version
+
+If you receve a message with the version, then perl is installed. If you get an error saying that perl cannot be found then you need to install it.
+
+perl.prg/geet.html#win32
+
+If perl gives you an error saying "Can't locate XXX in @INC" you may need to change the @INC array. @INC works like $PATH, but for Perl. See this page for help: perlmaven.com/how-to-change-inc-to-find-perl-modules-in-non-standard-locations
+
+@INC on OVert computer:
+@INC = C:\Program Files\Git\
+eg. @INC\usr\share\perl5\core_perl = C:\Program Files\Git\usr\share\perl5\core_perl
+
+
+***
 ## Pipeline Script Dependencies
 ***
 
-## Parallel::ForkManager
+## PAUP
+
+http://phylosolutions.com/paup-test/
+
+Download the binary version.
+Navigate to the file and expand with:
+
+    gunzip paupa***
+    
+Rename as `paup`
+You will probably need to give permissions in order to excturee this file.
+
+    chmod a+x paup
+
+Move to $PATH
+
+## Perl Modules
 To install use:
 
     cpan Parallel::ForkManager
@@ -39,6 +95,7 @@ I tried this but I'm not sure if it worked. Instead I downloaded each module dir
 - Moo (https://metacpan.org/pod/Moo)
 - Sub::Quote (https://metacpan.org/pod/Sub::Quote)
 - Bio::Seq (https://metacpan.org/pod/Bio::Seq)
+- Statistics::Distributions (https://metacpan.org/release/Statistics-Distributions)
 
 Install each by downloading, unzipping, navigating into the extracted folder, and running:
 

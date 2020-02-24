@@ -198,6 +198,12 @@ Run the following:
     --ref_taxa "Oreochromis_niloticus" \
     --cpu 12
 
+    
+This will also produce the file `nf_filtered.numofgenescaptured.txt`. To clean up run:
+
+    mkdir 4_nf_filtered_supp
+    mv nf_filtered.numofgenescaptured.txt 4_nf_filtered_supp/
+
 ## VIII. Summary Statistics
 Run the following:
 
@@ -258,7 +264,15 @@ ASTRAL is a tool for estimating an unrooted species tree given a set of unrooted
     construct_tree.pl --indir nf_filtered --cpu 4
 
 Output files: `nf_filtered_ml`
-        
+
+Potential Problem:
+If running this script gives an error similar to the one below, you might need to make a copy of your `nf_filtered` directory wherever it seems to be looking. I had to make a new directory called `Calder` in `Dropbox` as well in order for this to work. Make sure to move `8_nf_filtered` out of `Dropbox` and remove the copied `nf_filtered` from whereever you put it. I have yet to find a better solution.
+
+>sh: line 0: cd: /Users/calderatta/Dropbox/Calder/: No such file or directory
+>sh: line 0: cd: /Users/calderatta/Dropbox/Calder/: No such file or directory
+>
+>ERROR: Cannot find input directory "/Users/calderatta/Dropbox/Calder/8_nf_filtered", please check --indir (No such file or directory)
+
 ##### 2. Merge resulting gene trees into one file
 
 Navigate into `nf_filtered_ml`.
@@ -312,7 +326,9 @@ Workflow: Filter alignments + RAxML tree -> Filter clocklike
 
     clocklikeness_test.pl --indir nf_filtered --besttree RAxML_bestTree.raxml.tre --clocklike clocklike_dir --cpu 4
 
-This  produces a folder clocklikeness_dir with filtered genes based on p-values, but do not use these as the filter is very aggresive. Examine `likelihood.txt` locally in excel.
+This  produces a folder `clocklikeness_dir` with filtered genes based on p-values, but do not use these as the filter is very aggresive. Examine `likelihood.txt` locally in excel.
+
+Be sure to run the RAxML file `RAxML_bestTree.*****`. I was not able to get this to run with the astral tree.
 
 ##### 2. Select clocklike genes to filter
 In `likelihood.txt`, first check if the likelihood ratio (MCL) and sequence length correlate. If so, make a corrected MCL by dividing the ratio by length and filter for the lowest values. Then determine a minimum value threshhold for genes to keep based, this number is subjective, but about 500 genes is good. Also consider keeping genes that are longer.
