@@ -105,7 +105,7 @@ To merge files with lane numbers `L001` and `L002` run:
 
 The first 2 commands merge the lanes for R1 and R2 files respectively for the 1st run. The latter 2 commands do the same for the 2nd run. Change the lane numbers to match your own samples.
 
-![image](images/merge.png) <!-- .element height="25%" width="50%" -->
+![image](images/merge.png) <!-- .element width="10%" -->
 
 ##### 4. Move merged files into merge folder
 Move to a new `merge` directory. You can make the file and click-and-drag or use the following code:
