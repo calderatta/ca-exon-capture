@@ -19,12 +19,12 @@ This document is meant to have all instructions for software relating to the exo
 
 -	Perl v5.18 or higher
 -	BioPerl v1.007001 of higher (used in mafft_aln.pl, filter.pl)
--	Perl modules
-  - Bio::Seq (included in BioPerl) (used in assemble.pl, exonerate_best.pl, merge.pl)
-  - Bio::AlignIO (included in Bioperl) (used in statistics.pl, detect_contamination.pl)
-  - Bio::Align::DNAStatistics (included in Bioperl) (used in statistics.pl, detect_contamination.pl)
-  - Parallel::Forkmanager (used in assemble.pl, rmdup.pl, ubxandp.pl, sga_assemble.pl, exonerate_best.pl, merge.pl, mafft_aln.pl, filter.pl)
-  - Sys::Info (used in assemble.pl)
+- Perl modules
+    - Bio::Seq (included in BioPerl) (used in assemble.pl, exonerate_best.pl, merge.pl)
+    - Bio::AlignIO (included in Bioperl) (used in statistics.pl, detect_contamination.pl)
+    - Bio::Align::DNAStatistics (included in Bioperl) (used in statistics.pl, detect_contamination.pl)
+    - Parallel::Forkmanager (used in assemble.pl, rmdup.pl, ubxandp.pl, sga_assemble.pl, exonerate_best.pl, merge.pl, mafft_aln.pl, filter.pl)
+    - Sys::Info (used in assemble.pl)
 -	cutadapt v1.2.1 or higher (used in trim_adaptor.pl)
 -	trim_galore v0.4.1 or higher (used in trim_adaptor.pl)
 -	USEARCH 10.0.240 or higher (used in assemble.pl, rmdup.pl, ubxandp.pl, reblast.pl)
