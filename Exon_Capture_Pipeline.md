@@ -1,21 +1,18 @@
 # Exon-capture Assembly Pipeline
 
-##### Tornabene Lab of Systematics and Biodiversity
-
-Author: Calder Atta
-        University of Washington
-        School of Aquatic and Fisheries Science
-        calderatta@gmail.com
-
-Based on reference: Yuan H, Atta C, Tornabene L, Li C. (2019) Assexon: Assembling Exon Using Gene Capture Data. Evolutionary Bioinformatics 15: 1–13. doi.org/10.1177/1176934319874792.
+Author:  
+   Calder Atta  
+   University of Washington  
+   School of Aquatic and Fisheries Science  
+   calderatta@gmail.com  
 
 Created: February 12, 2020
 
 Last modified: May 10, 2020
 
-***
-## Introduction
- This pipeline is meant to guide the user to process their raw exon-capture data. See installation guide if any programs are not installed or you run into errors not described below. This pipeline is based on the Assexon method described in the above reference.
+This pipeline is meant to guide the user to process their raw exon-capture data. See installation guide if any programs are not installed or you run into errors not described below. This pipeline is based on the Assexon method described in the reference below.
+
+Reference: Yuan H, Atta C, Tornabene L, Li C. (2019) Assexon: Assembling Exon Using Gene Capture Data. Evolutionary Bioinformatics 15: 1–13. doi.org/10.1177/1176934319874792.
 
 ## Overview
 I. Setup and Raw Data
@@ -32,7 +29,6 @@ XI. Finding Contaminated Samples
 XII. Removing Contaminated Samples
 XIII. Select Clocklike Genes
 XIV. Generate Time-calibrated Tree
-***
 
 ## I. Setup and Raw Data
 
@@ -82,6 +78,9 @@ You should have 2 files for each sample (or more if you ran samples more than on
 - S## is a unique ID number given by the sequencing process to each sample.
 - L### refers to lane number. If your samples were run twice (on two different lanes) then you will have 4 files per sample - R1 and R2 for two different name numbers. In this case you will need to do the merge step below.
 
+Example:
+<img src="./images/raw.png" class="center" width="500">
+
 ## II. Merge Lanes
 *** SKIP THIS STEP if samples were only run once! ***
 
@@ -105,7 +104,7 @@ To merge files with lane numbers `L001` and `L002` run:
 
 The first 2 commands merge the lanes for R1 and R2 files respectively for the 1st run. The latter 2 commands do the same for the 2nd run. Change the lane numbers to match your own samples.
 
-<img src="./images/merge.png" width="400">
+<img src="./images/merge.png" class="center" width="400">
 
 ##### 4. Move merged files into merge folder
 Move to a new `merge` directory. You can make the file and click-and-drag or use the following code:
@@ -120,7 +119,7 @@ Now, there should be one R1 and R2 per sample as such:
 ##### 5. (Optional) Return original files to their respective folders and restore lane names
 
 ***
-## Assembly
+##### Assembly
 ***
 
 ## III. Trim Adapters
@@ -254,7 +253,7 @@ Inside your output folder `3_assemble_result` you will have one file for each ma
 - `f`: coding sequences with flanking regions  
 - `p`: amino acid sequences
 
-![image](images/assemble_result.png | width=50)
+<img src="./images/assemble_result.png" class="center" width="300">
 
 Several other folders and files will be generated during the execution:  
 -`run_dir`: All intermediate outputs will be generated under this folder.  
@@ -389,7 +388,7 @@ Then just specify the new sample list file after the option "--samplelist". Exam
   	--samplelist samplelist.txt
 
 ***
-## Post-processing
+##### Post-processing
 ***
 
 ## V. Filter Data Set
@@ -399,7 +398,7 @@ Before aligning, remove...
 
 These values can be adjusted if you want to retain more/fewer genes or samples. These are based on data from Calder Atta flatfish data (2019). See below for graph showing how many genes are retained (y-axis) when those with fewer than x number of genes are removed (70% of 122 samples = 85 --> about 3000 genes retained).
 
-![image](images/example_filter_CA.png | width=100)
+<img src="./images/example_filter_CA.png" class="center" width="1000">
 
 ##### 1. Check genes counts per sample
 Open and check in `assemble_result_supp/enriched_gene.txt`.
@@ -483,7 +482,7 @@ At this point you will have a dataset that is ready to used for phylogenetic ana
 1. Concatinated: Filter alignments -> Concatenated master gene (concat_loci.pl) -> RAxML
 2. Gene Trees: Filter alignments -> Gene trees (construct_tree.pl) -> ASTRAL
 
-![image](images/concat_vs_genetree.png | width=100)
+<img src="./images/concat_vs_genetree.png" class="center" width="1000">
 
 ## IX. Concatenated RAxML Method
 Concatenated trees attempt to reflect the true evolutionary history of species by weighting each gene by its size so each base pair is treated equally. We use raxml to reconstruct concatenated trees.
@@ -537,7 +536,7 @@ tree; the subsequent analyses should cluster orthologs, thus demonstrating the e
 
 ASTRAL is a tool for estimating an unrooted species tree given a set of unrooted gene trees. It is statistically consistent under the multi species coalescent model. ASTRAL finds the species tree that has the maximum number of shared induced quartet trees with the set of gene trees, subject to the constraint that the set of bipartitions in the species tree comes from a predefined set of bipartitions.
 
-![image](images/astral_quartets.png | width=100)
+<img src="./images/astral_quartets.png" class="center" width="600">
 
 ##### 1. Construct gene tree for each loci (construct.pl)
 
@@ -583,7 +582,8 @@ We can use a mapping file to force all individuals to map together using -a. (ht
 ##### 1. Create a text file `same.txt` with groupings of closely related samples on each line.
 This is fairly subjective, but make groups that you would strongly expect to have more similar DNA than to anything outside the group.
 Example:
-![image](images/same.png | width=100)
+<img src="./images/same.png" class="center" width="1000">
+
 ##### 2. Compare groupings to data.
 Run `detect_contamination.pl` on the filtered alignments using `same.txt` to check if clearly unrealated samples are too genetically similar. Example:
 

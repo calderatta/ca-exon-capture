@@ -1,17 +1,16 @@
 # Installation Guide for Exon Capture Data Processing
 
-##### Tornabene Lab of Systematics and Biodiversity
-
-Author: Calder Atta
-        University of Washington
-        School of Aquatic and Fisheriese Science
-        calderatta@gmail.com
+Author:  
+   Calder Atta  
+   University of Washington  
+   School of Aquatic and Fisheries Science  
+   calderatta@gmail.com  
 
 Created: February 12, 2020
 
-Last modified: ~
+Last modified: July 17, 2020
 
-This document is meant to have all instructions for software relating to the exon-capture piptline from scratch. If there are any errors running any of the scripts or other programs, solutions may be included here. Update as needed.
+This document contains instructions for software relating to the exon-capture piptline from scratch. If there are any errors running any of the scripts or other programs, solutions may be included here. Update as needed.
 
 ##### IMPORTANT: Most of these installations are much easier on a Mac than on Windows
 
